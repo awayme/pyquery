@@ -674,8 +674,12 @@ class PyQuery(list):
         try:
             for i, element in enumerate(self):
                 func_globals(func)['this'] = element
-                if callback(func, i, element) is False:
-                    break
+                try:
+                    if callback(func, i, element) is False:
+                        break
+                except ValueError, ex:
+                    print('Exception passed:%s(%s)' % (ex, element.attrib))
+                    continue
         finally:
             f_globals = func_globals(func)
             if 'this' in f_globals:
